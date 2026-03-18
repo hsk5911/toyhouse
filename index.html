@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToyHouse — A Home For Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brown:#6B3F1F; --brown-mid:#8B5E3C; --brown-light:#C49A6C;
+  --cream:#FAF3EC; --cream-dark:#F0E4D4; --cream-mid:#E8D5C0;
+  --white:#FFFDF9; --text:#3D2010; --wa:#25D366; --sale:#C0392B;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* PAGE SYSTEM */
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:12px 32px;background:rgba(250,243,236,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--cream-mid)}
+.nav-logo{cursor:pointer}
+.nav-logo img{height:44px;width:auto;display:block}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-back{display:none;align-items:center;gap:6px;background:var(--cream-dark);border:none;padding:9px 16px;border-radius:50px;font-size:14px;font-weight:600;color:var(--brown);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.nav-back:hover{background:var(--cream-mid)}
+.nav-back.visible{display:flex}
+.nav-wa{display:flex;align-items:center;gap:8px;background:var(--wa);color:#fff;padding:10px 20px;border-radius:50px;text-decoration:none;font-weight:700;font-size:14px;box-shadow:0 4px 16px rgba(37,211,102,.3);transition:transform .2s,box-shadow .2s;white-space:nowrap}
+.nav-wa:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(37,211,102,.4)}
+.nav-wa svg{width:18px;height:18px;fill:#fff;flex-shrink:0}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 24px 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-120px;right:-120px;width:520px;height:520px;background:radial-gradient(circle,rgba(196,154,108,.18) 0%,transparent 70%);border-radius:50%;animation:blob 9s ease-in-out infinite}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(107,63,31,.09) 0%,transparent 70%);border-radius:50%;animation:blob 11s ease-in-out infinite reverse}
+@keyframes blob{0%,100%{transform:translateY(0)}50%{transform:translateY(-28px)}}
+.hero-logo{width:150px;height:auto;margin-bottom:28px;filter:drop-shadow(0 8px 24px rgba(107,63,31,.15));animation:fadeDown .8s ease both}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{display:inline-block;background:var(--brown);color:var(--cream);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 18px;border-radius:50px;margin-bottom:18px;animation:fadeUp .8s .15s both ease}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(40px,7vw,78px);font-weight:900;line-height:1.06;color:var(--brown);margin-bottom:18px;animation:fadeUp .8s .25s both ease}
+.hero h1 em{font-style:italic;color:var(--brown-light)}
+.hero p{font-size:18px;color:var(--brown-mid);max-width:500px;line-height:1.7;margin-bottom:38px;animation:fadeUp .8s .35s both ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s .45s both ease}
+.btn-primary{background:var(--brown);color:var(--cream);padding:15px 34px;border-radius:50px;font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 6px 20px rgba(107,63,31,.28);transition:all .25s;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+.btn-primary:hover{background:var(--brown-mid);transform:translateY(-2px);box-shadow:0 10px 28px rgba(107,63,31,.35)}
+.btn-outline{background:transparent;color:var(--brown);padding:15px 34px;border-radius:50px;font-size:15px;font-weight:700;text-decoration:none;border:2px solid var(--brown);transition:all .25s}
+.btn-outline:hover{background:var(--brown);color:var(--cream);transform:translateY(-2px)}
+
+/* TICKER */
+.ticker{background:var(--brown);overflow:hidden;padding:13px 0}
+.ticker-inner{display:flex;gap:48px;white-space:nowrap;width:max-content;animation:ticker 22s linear infinite}
+.ticker-inner span{font-size:13px;font-weight:500;color:rgba(250,243,236,.88);letter-spacing:.4px}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTION COMMONS */
+.section-label{text-align:center;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--brown-light);margin-bottom:10px}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,50px);font-weight:800;color:var(--brown);text-align:center;margin-bottom:52px;line-height:1.15}
+.section-title em{font-style:italic;color:var(--brown-light)}
+
+/* PRODUCTS GRID */
+.products{padding:80px 24px;max-width:1140px;margin:0 auto}
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.product-card{background:var(--white);border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(107,63,31,.08);transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .35s;position:relative;display:flex;flex-direction:column;cursor:pointer}
+.product-card:hover{transform:translateY(-8px);box-shadow:0 18px 50px rgba(107,63,31,.15)}
+.prod-badge{position:absolute;top:14px;left:14px;z-index:5;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 13px;border-radius:50px;background:var(--brown);color:var(--cream)}
+.prod-badge.sale{background:var(--sale)}
+
+/* CARD SLIDER */
+.prod-slider{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:var(--cream-dark)}
+.prod-slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease}
+.prod-slider img.active{opacity:1}
+.slider-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:4}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55);cursor:pointer;transition:background .25s,transform .25s}
+.dot.active{background:#fff;transform:scale(1.3)}
+.slider-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.75);border:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:4;transition:background .2s;backdrop-filter:blur(4px);color:#333}
+.slider-btn:hover{background:rgba(255,255,255,.95)}
+.slider-btn.prev{left:10px}
+.slider-btn.next{right:10px}
+
+/* CARD BODY */
+.prod-body{padding:22px;flex:1;display:flex;flex-direction:column}
+.prod-tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--brown-light);margin-bottom:7px}
+.prod-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--brown);margin-bottom:9px;line-height:1.25}
+.prod-desc{font-size:13.5px;color:var(--brown-mid);line-height:1.65;margin-bottom:14px}
+.prod-features{list-style:none;margin-bottom:16px}
+.prod-features li{font-size:13px;color:var(--brown-mid);padding:2px 0;display:flex;align-items:flex-start;gap:6px}
+.prod-features li::before{content:'✓';color:var(--wa);font-weight:700;font-size:13px;flex-shrink:0;margin-top:1px}
+.prod-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:16px;margin-top:auto}
+.price-now{font-size:26px;font-weight:800;color:var(--brown)}
+.price-old{font-size:15px;font-weight:500;color:var(--brown-light);text-decoration:line-through}
+.price-save{font-size:12px;font-weight:700;background:#e8f5e9;color:#2e7d32;padding:3px 9px;border-radius:50px}
+.card-actions{display:flex;gap:10px;margin-top:auto}
+.btn-view{flex:1;background:var(--cream-dark);color:var(--brown);padding:13px;border-radius:14px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-view:hover{background:var(--cream-mid)}
+.btn-wa{display:flex;align-items:center;justify-content:center;gap:8px;flex:1;background:var(--wa);color:#fff;padding:13px;border-radius:14px;font-size:14px;font-weight:700;text-decoration:none;transition:all .25s;box-shadow:0 4px 16px rgba(37,211,102,.22)}
+.btn-wa:hover{background:#1ebe5d;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.35)}
+.btn-wa svg{width:18px;height:18px;fill:#fff;flex-shrink:0}
+
+/* WHY US */
+.why{background:var(--brown);padding:80px 24px}
+.why .section-label{color:var(--brown-light)}
+.why .section-title{color:var(--cream)}
+.why .section-title em{color:var(--brown-light)}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:920px;margin:0 auto}
+.why-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:20px;padding:26px 22px;text-align:center;transition:all .25s}
+.why-card:hover{background:rgba(255,255,255,.13);transform:translateY(-4px)}
+.why-icon{font-size:34px;margin-bottom:12px}
+.why-card h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--cream);margin-bottom:7px;font-weight:700}
+.why-card p{font-size:13px;color:rgba(250,243,236,.62);line-height:1.6}
+
+/* FLOATING WA */
+.float-wa{position:fixed;bottom:26px;right:26px;z-index:999;background:var(--wa);width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(37,211,102,.45);text-decoration:none;animation:waPulse 2.2s infinite;transition:transform .25s}
+.float-wa:hover{transform:scale(1.12)}
+.float-wa svg{width:30px;height:30px;fill:#fff}
+@keyframes waPulse{0%,100%{box-shadow:0 6px 22px rgba(37,211,102,.45)}50%{box-shadow:0 6px 36px rgba(37,211,102,.68)}}
+
+/* FOOTER */
+footer{background:var(--cream-dark);padding:40px 24px;text-align:center;border-top:1px solid var(--cream-mid)}
+footer img{height:50px;margin-bottom:14px;display:block;margin-left:auto;margin-right:auto}
+footer p{font-size:13px;color:var(--brown-mid);margin-bottom:5px}
+footer a{color:var(--brown);text-decoration:none;font-weight:600}
+footer a:hover{text-decoration:underline}
+
+/* ═══════════════════════════════════
+   PRODUCT DETAIL PAGE
+═══════════════════════════════════ */
+.detail-page{padding-top:80px}
+.detail-wrap{max-width:1100px;margin:0 auto;padding:48px 24px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
+
+/* Detail Gallery */
+.detail-gallery{}
+.main-img-wrap{width:100%;aspect-ratio:1/1;border-radius:20px;overflow:hidden;background:var(--cream-dark);margin-bottom:14px;position:relative}
+.main-img-wrap img{width:100%;height:100%;object-fit:cover;transition:opacity .35s}
+.thumb-row{display:flex;gap:10px;flex-wrap:wrap}
+.thumb{width:72px;height:72px;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .2s;flex-shrink:0}
+.thumb:hover{transform:scale(1.05)}
+.thumb.active{border-color:var(--brown)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+
+/* Detail Info */
+.detail-info{}
+.detail-brand{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--brown-light);margin-bottom:8px}
+.detail-name{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,40px);font-weight:900;color:var(--brown);margin-bottom:16px;line-height:1.15}
+.detail-price-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.detail-price-now{font-size:36px;font-weight:800;color:var(--brown)}
+.detail-price-old{font-size:18px;color:var(--brown-light);text-decoration:line-through}
+.detail-price-save{font-size:13px;font-weight:700;background:#e8f5e9;color:#2e7d32;padding:4px 12px;border-radius:50px}
+
+.detail-desc{font-size:15px;color:var(--brown-mid);line-height:1.75;margin-bottom:24px}
+
+.detail-section-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--brown);margin-bottom:12px}
+.detail-includes{list-style:none;margin-bottom:24px}
+.detail-includes li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--cream-mid);font-size:14px;color:var(--text);line-height:1.5}
+.detail-includes li:last-child{border-bottom:none}
+.detail-includes li .arrow{color:var(--brown-light);font-weight:700;flex-shrink:0;margin-top:1px}
+
+.detail-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.meta-chip{background:var(--cream-dark);border-radius:12px;padding:12px 14px}
+.meta-chip .label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--brown-light);margin-bottom:3px}
+.meta-chip .value{font-size:14px;font-weight:600;color:var(--brown)}
+
+.detail-experiments{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
+.detail-experiments li{font-size:13.5px;color:var(--brown-mid);display:flex;align-items:center;gap:6px}
+
+.detail-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.badge-pill{background:var(--cream-dark);border:1px solid var(--cream-mid);border-radius:50px;padding:6px 14px;font-size:13px;font-weight:600;color:var(--brown)}
+
+.detail-cta{display:flex;flex-direction:column;gap:12px}
+.btn-wa-big{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--wa);color:#fff;padding:18px;border-radius:16px;font-size:17px;font-weight:700;text-decoration:none;box-shadow:0 6px 20px rgba(37,211,102,.3);transition:all .25s}
+.btn-wa-big:hover{background:#1ebe5d;transform:translateY(-2px);box-shadow:0 10px 28px rgba(37,211,102,.4)}
+.btn-wa-big svg{width:24px;height:24px;fill:#fff;flex-shrink:0}
+.btn-back-big{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:transparent;border:2px solid var(--brown);color:var(--brown);padding:16px;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .25s}
+.btn-back-big:hover{background:var(--brown);color:var(--cream)}
+
+.detail-review{background:var(--cream-dark);border-radius:20px;padding:22px;margin-top:32px;position:relative}
+.detail-review::before{content:'"';font-family:'Playfair Display',serif;font-size:60px;color:var(--brown-light);position:absolute;top:8px;left:18px;line-height:1}
+.detail-review p{font-size:15px;color:var(--text);line-height:1.7;padding-left:24px;font-style:italic;margin-bottom:10px}
+.detail-review .reviewer{font-size:13px;font-weight:700;color:var(--brown);padding-left:24px}
+.detail-review .stars{color:#f59e0b;letter-spacing:2px;margin-bottom:6px;padding-left:24px}
+
+/* RESPONSIVE */
+@media(max-width:860px){
+  .detail-grid{grid-template-columns:1fr;gap:32px}
+  .products-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:580px){
+  nav{padding:11px 16px}
+  .nav-logo img{height:36px}
+  .nav-wa{padding:9px 12px;font-size:13px}
+  .hero{padding:110px 18px 60px}
+  .hero-logo{width:120px}
+  .hero p{font-size:16px}
+  .products{padding:60px 16px}
+  .products-grid{grid-template-columns:1fr}
+  .why{padding:60px 16px}
+  .float-wa{width:52px;height:52px;bottom:20px;right:18px}
+  .float-wa svg{width:26px;height:26px}
+  .hero-cta{flex-direction:column;align-items:center}
+  .btn-primary,.btn-outline{width:100%;max-width:300px;text-align:center}
+  .detail-wrap{padding:32px 16px}
+  .detail-meta{grid-template-columns:1fr 1fr}
+  .detail-experiments{grid-template-columns:1fr}
+  .card-actions{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <img src="https://toyhouse.live/cdn/shop/files/Logo_cropped_processed_by_imagy.jpg" alt="ToyHouse">
+  </div>
+  <div class="nav-right">
+    <button class="nav-back" id="navBack" onclick="showPage('home')">← Back to Home</button>
+    <a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20want%20to%20know%20more%20%F0%9F%8E%81" target="_blank" class="nav-wa">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Chat with Us
+    </a>
+  </div>
+</nav>
+
+<!-- ═══════════ HOME PAGE ═══════════ -->
+<div class="page active" id="page-home">
+
+  <section class="hero">
+    <img src="https://toyhouse.live/cdn/shop/files/Logo_cropped_processed_by_imagy.jpg" alt="ToyHouse" class="hero-logo">
+    <div class="hero-badge">🇮🇳 Trusted by 5000+ Indian Families</div>
+    <h1>Where Learning<br>Meets <em>Play</em></h1>
+    <p>Educational toy kits that spark curiosity, boost creativity & build smarter, happier kids. Free shipping on every order!</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="scrollToProducts()">🎁 Shop Our Kits</button>
+      <a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20want%20to%20explore%20your%20kits%20%F0%9F%8E%81" target="_blank" class="btn-outline">💬 WhatsApp Us</a>
+    </div>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>🚚 Free Shipping on All Orders</span><span>🎓 Expert-Curated Kits</span>
+      <span>✅ Safe &amp; Child-Friendly</span><span>🇮🇳 Made for Indian Kids</span>
+      <span>💳 COD Available</span><span>🎁 FREE Gift Wrapping</span>
+      <span>⭐ 4.8 Star Rating</span><span>50+ Unique Kits</span>
+      <span>🚚 Free Shipping on All Orders</span><span>🎓 Expert-Curated Kits</span>
+      <span>✅ Safe &amp; Child-Friendly</span><span>🇮🇳 Made for Indian Kids</span>
+      <span>💳 COD Available</span><span>🎁 FREE Gift Wrapping</span>
+      <span>⭐ 4.8 Star Rating</span><span>50+ Unique Kits</span>
+    </div>
+  </div>
+
+  <section class="products" id="products-section">
+    <div class="section-label">Our Collection</div>
+    <h2 class="section-title">Bestselling <em>Kits</em></h2>
+    <div class="products-grid">
+
+      <!-- Card 1: Young Scientist -->
+      <div class="product-card">
+        <div class="prod-badge sale">Sale</div>
+        <div class="prod-slider" id="slider-1">
+          <img src="https://toyhouse.live/cdn/shop/files/ChatGPT_Image_Feb_23_2026_02_18_41_PM.png?v=1771839939&width=600" alt="Young Scientist" class="active">
+          <img src="https://toyhouse.live/cdn/shop/files/EP123-Illusion-Science-Photoroom-768x576.jpg?v=1771836546&width=600" alt="Illusion Science">
+          <img src="https://toyhouse.live/cdn/shop/files/EP121-Boom-Fun-With-Science-Photoroom-768x576.jpg?v=1771836546&width=600" alt="Boom Science">
+          <img src="https://toyhouse.live/cdn/shop/files/EP126-Science-61-1-Photoroom-768x576.jpg?v=1771836546&width=600" alt="Science 61">
+          <button class="slider-btn prev" onclick="event.stopPropagation();slide('slider-1',-1)">&#8249;</button>
+          <button class="slider-btn next" onclick="event.stopPropagation();slide('slider-1',1)">&#8250;</button>
+          <div class="slider-dots" id="dots-slider-1"></div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-tag">Educational Kit</div>
+          <div class="prod-name">Young Scientist Collection</div>
+          <div class="prod-desc">100+ science experiments — volcano eruptions, crystal growing, slime making & optical illusions!</div>
+          <ul class="prod-features">
+            <li>Science 61 — 61 experiments</li>
+            <li>BOOM Fun with Science</li>
+            <li>Illusion Science kit</li>
+            <li>Age 8–12 | All materials included</li>
+          </ul>
+          <div class="prod-price">
+            <span class="price-now">₹1,499</span>
+            <span class="price-old">₹2,300</span>
+            <span class="price-save">Save ₹801</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-view" onclick="showProduct('scientist')">View Details</button>
+            <a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20want%20to%20place%20an%20order%20for%20Young%20Scientist%20Collection%20%E2%82%B91%2C499%20%F0%9F%94%AC" target="_blank" class="btn-wa" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Place Order
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Sensory Development -->
+      <div class="product-card">
+        <div class="prod-badge sale">Sale</div>
+        <div class="prod-slider" id="slider-2">
+          <img src="https://toyhouse.live/cdn/shop/files/Gemini_Generated_Image_xbzkz4xbzkz4xbzk.png?v=1771845023&width=600" alt="Sensory Lab" class="active">
+          <img src="https://toyhouse.live/cdn/shop/files/EP044-Active-Sand-Princess-Play-Set-Photoroom-768x576.jpg?v=1771845047&width=600" alt="Princess Sand">
+          <img src="https://toyhouse.live/cdn/shop/files/EP043-Active-Sand-Animal-Photoroom-1-768x576_-_Copy.jpg?v=1771845047&width=600" alt="Animal Sand">
+          <img src="https://toyhouse.live/cdn/shop/files/IMG20221223155050-768x556.jpg?v=1771845047&width=600" alt="In Use">
+          <button class="slider-btn prev" onclick="event.stopPropagation();slide('slider-2',-1)">&#8249;</button>
+          <button class="slider-btn next" onclick="event.stopPropagation();slide('slider-2',1)">&#8250;</button>
+          <div class="slider-dots" id="dots-slider-2"></div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-tag">Educational Kit</div>
+          <div class="prod-name">Sensory Development Lab Kit</div>
+          <div class="prod-desc">2 hours of screen-free brain development. Engages all senses to boost focus, creativity & emotional growth.</div>
+          <ul class="prod-features">
+            <li>Active Sand Animal World</li>
+            <li>Active Sand Princess Castle</li>
+            <li>Mushroom Nail Board</li>
+            <li>Age 3–8 | Montessori-aligned</li>
+          </ul>
+          <div class="prod-price">
+            <span class="price-now">₹1,399</span>
+            <span class="price-old">₹2,199</span>
+            <span class="price-save">Save ₹800</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-view" onclick="showProduct('sensory')">View Details</button>
+            <a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20want%20to%20place%20an%20order%20for%20Sensory%20Development%20Lab%20Kit%20%E2%82%B91%2C399%20%F0%9F%A7%A0" target="_blank" class="btn-wa" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Place Order
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Indian Heritage -->
+      <div class="product-card">
+        <div class="prod-badge sale">Sale</div>
+        <div class="prod-slider" id="slider-3">
+          <img src="https://toyhouse.live/cdn/shop/files/ChatGPT_Image_Mar_9_2026_03_43_55_PM.png?v=1773051436&width=600" alt="Heritage Art" class="active">
+          <img src="https://toyhouse.live/cdn/shop/files/81akYZZPkfL._SL1500.jpg?v=1773051385&width=600" alt="Art Kit">
+          <img src="https://toyhouse.live/cdn/shop/files/81e65NmPaqL._SL1500.jpg?v=1773051385&width=600" alt="Art Contents">
+          <img src="https://toyhouse.live/cdn/shop/files/PT015-Rajasthani-Art-Photoroom-768x576.jpg?v=1773051385&width=600" alt="Rajasthani Art">
+          <img src="https://toyhouse.live/cdn/shop/files/41P6GfSKU_L.jpg?v=1773051385&width=600" alt="Heritage Extra">
+          <button class="slider-btn prev" onclick="event.stopPropagation();slide('slider-3',-1)">&#8249;</button>
+          <button class="slider-btn next" onclick="event.stopPropagation();slide('slider-3',1)">&#8250;</button>
+          <div class="slider-dots" id="dots-slider-3"></div>
+        </div>
+        <div class="prod-body">
+          <div class="prod-tag">Educational Kit</div>
+          <div class="prod-name">Indian Heritage Art Collection</div>
+          <div class="prod-desc">Learn 4 traditional Indian art forms — Warli, Madhubani, Rajasthani Miniature & Shell Art!</div>
+          <ul class="prod-features">
+            <li>Warli &amp; Madhubani Art Kits</li>
+            <li>Rajasthani Miniature Painting</li>
+            <li>Shell Art Kit</li>
+            <li>Age 7–12 | 15+ learning hours</li>
+          </ul>
+          <div class="prod-price">
+            <span class="price-now">₹1,499</span>
+            <span class="price-old">₹2,500</span>
+            <span class="price-save">Save ₹1,001</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-view" onclick="showProduct('heritage')">View Details</button>
+            <a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20want%20to%20place%20an%20order%20for%20Indian%20Heritage%20Art%20Collection%20%E2%82%B91%2C499%20%F0%9F%8E%A8" target="_blank" class="btn-wa" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Place Order
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="why">
+    <div class="section-label">Why ToyHouse?</div>
+    <h2 class="section-title">Built for <em>Indian Parents</em></h2>
+    <div class="why-grid">
+      <div class="why-card"><div class="why-icon">🚚</div><h3>Free Shipping</h3><p>Pan-India on every order, no minimum, always.</p></div>
+      <div class="why-card"><div class="why-icon">🛡️</div><h3>100% Safe</h3><p>Child-safe, non-toxic, BIS certified materials only.</p></div>
+      <div class="why-card"><div class="why-icon">🎓</div><h3>Expert Curated</h3><p>Designed with educators &amp; child development experts.</p></div>
+      <div class="why-card"><div class="why-icon">🎁</div><h3>Free Gift Wrap</h3><p>Premium gift wrapping on every single order.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <img src="https://toyhouse.live/cdn/shop/files/Logo_cropped_processed_by_imagy.jpg" alt="ToyHouse">
+    <p>📞 <a href="tel:+918384092939">+91 83840 92939</a></p>
+    <p>Questions? <a href="https://wa.me/918384092939" target="_blank">Chat with us on WhatsApp</a> — we reply fast! ⚡</p>
+    <br><p style="font-size:12px;opacity:.45;">© 2026 ToyHouse. A Home For Play. 🧸</p>
+  </footer>
+</div><!-- end home -->
+
+
+<!-- ═══════════ PRODUCT PAGE: YOUNG SCIENTIST ═══════════ -->
+<div class="page" id="page-scientist">
+  <div class="detail-page">
+    <div class="detail-wrap">
+      <div class="detail-grid">
+        <div class="detail-gallery">
+          <div class="main-img-wrap">
+            <img id="main-img-scientist" src="https://toyhouse.live/cdn/shop/files/ChatGPT_Image_Feb_23_2026_02_18_41_PM.png?v=1771839939&width=900" alt="Young Scientist Collection">
+          </div>
+          <div class="thumb-row">
+            <div class="thumb active" onclick="setMainImg('scientist',this,'https://toyhouse.live/cdn/shop/files/ChatGPT_Image_Feb_23_2026_02_18_41_PM.png?v=1771839939&width=900')"><img src="https://toyhouse.live/cdn/shop/files/ChatGPT_Image_Feb_23_2026_02_18_41_PM.png?v=1771839939&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('scientist',this,'https://toyhouse.live/cdn/shop/files/EP123-Illusion-Science-Photoroom-768x576.jpg?v=1771836546&width=900')"><img src="https://toyhouse.live/cdn/shop/files/EP123-Illusion-Science-Photoroom-768x576.jpg?v=1771836546&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('scientist',this,'https://toyhouse.live/cdn/shop/files/EP121-Boom-Fun-With-Science-Photoroom-768x576.jpg?v=1771836546&width=900')"><img src="https://toyhouse.live/cdn/shop/files/EP121-Boom-Fun-With-Science-Photoroom-768x576.jpg?v=1771836546&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('scientist',this,'https://toyhouse.live/cdn/shop/files/EP126-Science-61-1-Photoroom-768x576.jpg?v=1771836546&width=900')"><img src="https://toyhouse.live/cdn/shop/files/EP126-Science-61-1-Photoroom-768x576.jpg?v=1771836546&width=200" alt=""></div>
+          </div>
+          <div class="detail-review">
+            <div class="stars">★★★★★</div>
+            <p>We did 8 experiments the first weekend. My son wants to be a chemist now!</p>
+            <div class="reviewer">Priya Sharma — Mother of 2, Delhi</div>
+          </div>
+        </div>
+        <div class="detail-info">
+          <div class="detail-brand">ToyHouse</div>
+          <div class="detail-name">Young Scientist Collection</div>
+          <div class="detail-price-row">
+            <span class="detail-price-now">₹1,499</span>
+            <span class="detail-price-old">₹2,300</span>
+            <span class="detail-price-save">Save ₹801</span>
+          </div>
+          <div class="detail-desc">🔬 100+ Science Experiments at Home — everything a young scientist needs to explore chemistry, physics, and the wonders of science right in your living room!</div>
+
+          <div class="detail-section-title">What's Included</div>
+          <ul class="detail-includes">
+            <li><span class="arrow">→</span> Science 61 by Ekta (61 experiments!)</li>
+            <li><span class="arrow">→</span> BOOM — Fun with Science by Ekta</li>
+            <li><span class="arrow">→</span> Illusion Science by Ekta</li>
+            <li><span class="arrow">→</span> FREE Facts About Science booklet</li>
+            <li><span class="arrow">→</span> FREE Achievement Certificate</li>
+          </ul>
+
+          <div class="detail-section-title">Experiments Include</div>
+          <ul class="detail-experiments">
+            <li>⚗️ Volcano eruption</li>
+            <li>⚗️ Crystal growing</li>
+            <li>⚗️ Slime making</li>
+            <li>⚗️ Optical illusions</li>
+            <li>⚗️ Sound experiments</li>
+            <li>⚗️ Gravity &amp; motion tests</li>
+          </ul>
+
+          <div class="detail-meta">
+            <div class="meta-chip"><div class="label">Perfect For</div><div class="value">Ages 8–12 years</div></div>
+            <div class="meta-chip"><div class="label">Experiments</div><div class="value">100+ included</div></div>
+            <div class="meta-chip"><div class="label">Learning Hours</div><div class="value">Unlimited</div></div>
+            <div class="meta-chip"><div class="label">Skills</div><div class="value">Science &amp; Critical thinking</div></div>
+          </div>
+
+          <div class="detail-badges">
+            <span class="badge-pill">✅ All materials included</span>
+            <span class="badge-pill">✅ Safety equipment provided</span>
+            <span class="badge-pill">🎁 Gift-wrapped FREE</span>
+            <span class="badge-pill">🚚 Free Shipping</span>
+            <span class="badge-pill">💳 COD Available</span>
+          </div>
+
+          <div class="detail-cta">
+            <a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20want%20to%20place%20an%20order%20for%20Young%20Scientist%20Collection%20%E2%82%B91%2C499%20%F0%9F%94%AC" target="_blank" class="btn-wa-big">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Place Order on WhatsApp
+            </a>
+            <button class="btn-back-big" onclick="showPage('home')">← Back to All Kits</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════ PRODUCT PAGE: SENSORY ═══════════ -->
+<div class="page" id="page-sensory">
+  <div class="detail-page">
+    <div class="detail-wrap">
+      <div class="detail-grid">
+        <div class="detail-gallery">
+          <div class="main-img-wrap">
+            <img id="main-img-sensory" src="https://toyhouse.live/cdn/shop/files/Gemini_Generated_Image_xbzkz4xbzkz4xbzk.png?v=1771845023&width=900" alt="Sensory Development Lab Kit">
+          </div>
+          <div class="thumb-row">
+            <div class="thumb active" onclick="setMainImg('sensory',this,'https://toyhouse.live/cdn/shop/files/Gemini_Generated_Image_xbzkz4xbzkz4xbzk.png?v=1771845023&width=900')"><img src="https://toyhouse.live/cdn/shop/files/Gemini_Generated_Image_xbzkz4xbzkz4xbzk.png?v=1771845023&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('sensory',this,'https://toyhouse.live/cdn/shop/files/EP044-Active-Sand-Princess-Play-Set-Photoroom-768x576.jpg?v=1771845047&width=900')"><img src="https://toyhouse.live/cdn/shop/files/EP044-Active-Sand-Princess-Play-Set-Photoroom-768x576.jpg?v=1771845047&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('sensory',this,'https://toyhouse.live/cdn/shop/files/EP043-Active-Sand-Animal-Photoroom-1-768x576_-_Copy.jpg?v=1771845047&width=900')"><img src="https://toyhouse.live/cdn/shop/files/EP043-Active-Sand-Animal-Photoroom-1-768x576_-_Copy.jpg?v=1771845047&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('sensory',this,'https://toyhouse.live/cdn/shop/files/IMG20221223155050-768x556.jpg?v=1771845047&width=900')"><img src="https://toyhouse.live/cdn/shop/files/IMG20221223155050-768x556.jpg?v=1771845047&width=200" alt=""></div>
+          </div>
+          <div class="detail-review">
+            <div class="stars">★★★★★</div>
+            <p>Before: "Mumma, iPad please." After: "Mumma, can I build another castle?" Best investment ever!</p>
+            <div class="reviewer">Rohit Mehta — Father of 1, Mumbai</div>
+          </div>
+        </div>
+        <div class="detail-info">
+          <div class="detail-brand">ToyHouse</div>
+          <div class="detail-name">Sensory Development Lab Kit</div>
+          <div class="detail-price-row">
+            <span class="detail-price-now">₹1,399</span>
+            <span class="detail-price-old">₹2,199</span>
+            <span class="detail-price-save">Save ₹800</span>
+          </div>
+          <div class="detail-desc">🧠 2 hours of screen time. Or 2 hours of brain development. Same kid. Different choice.<br><br>Every hour of sensory play = stronger neural connections. Every hour of screen time = weaker attention span. The research doesn't lie.</div>
+
+          <div class="detail-section-title">What's Included</div>
+          <ul class="detail-includes">
+            <li><span class="arrow">→</span> Active Sand Animal World — mess-free sand, molds, tools & animals included</li>
+            <li><span class="arrow">→</span> Active Sand Princess Castle — build, demolish, rebuild endlessly</li>
+            <li><span class="arrow">→</span> Mushroom Nail Board — safe plastic nail hammering activity</li>
+            <li><span class="arrow">→</span> FREE Activity Guide</li>
+            <li><span class="arrow">→</span> FREE Achievement Certificate</li>
+          </ul>
+
+          <div class="detail-section-title">Skills Developed</div>
+          <ul class="detail-experiments">
+            <li>🧠 Tactile awareness</li>
+            <li>🧠 Hand-eye coordination</li>
+            <li>🧠 Fine motor precision</li>
+            <li>🧠 Cause &amp; effect thinking</li>
+            <li>🧠 Focus &amp; attention</li>
+            <li>🧠 Emotional regulation</li>
+          </ul>
+
+          <div class="detail-meta">
+            <div class="meta-chip"><div class="label">Perfect For</div><div class="value">Ages 3–8 years</div></div>
+            <div class="meta-chip"><div class="label">Activities</div><div class="value">3 kits included</div></div>
+            <div class="meta-chip"><div class="label">Approach</div><div class="value">Montessori-aligned</div></div>
+            <div class="meta-chip"><div class="label">Screen Time</div><div class="value">Zero 🙅</div></div>
+          </div>
+
+          <div class="detail-badges">
+            <span class="badge-pill">✅ Curated selection</span>
+            <span class="badge-pill">🎁 Gift-wrapped FREE</span>
+            <span class="badge-pill">🚚 Free Shipping</span>
+            <span class="badge-pill">💳 COD Available</span>
+            <span class="badge-pill">✅ Same-day dispatch</span>
+          </div>
+
+          <div class="detail-cta">
+            <a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20want%20to%20place%20an%20order%20for%20Sensory%20Development%20Lab%20Kit%20%E2%82%B91%2C399%20%F0%9F%A7%A0" target="_blank" class="btn-wa-big">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Place Order on WhatsApp
+            </a>
+            <button class="btn-back-big" onclick="showPage('home')">← Back to All Kits</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════ PRODUCT PAGE: HERITAGE ═══════════ -->
+<div class="page" id="page-heritage">
+  <div class="detail-page">
+    <div class="detail-wrap">
+      <div class="detail-grid">
+        <div class="detail-gallery">
+          <div class="main-img-wrap">
+            <img id="main-img-heritage" src="https://toyhouse.live/cdn/shop/files/ChatGPT_Image_Mar_9_2026_03_43_55_PM.png?v=1773051436&width=900" alt="Indian Heritage Art Collection">
+          </div>
+          <div class="thumb-row">
+            <div class="thumb active" onclick="setMainImg('heritage',this,'https://toyhouse.live/cdn/shop/files/ChatGPT_Image_Mar_9_2026_03_43_55_PM.png?v=1773051436&width=900')"><img src="https://toyhouse.live/cdn/shop/files/ChatGPT_Image_Mar_9_2026_03_43_55_PM.png?v=1773051436&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('heritage',this,'https://toyhouse.live/cdn/shop/files/81akYZZPkfL._SL1500.jpg?v=1773051385&width=900')"><img src="https://toyhouse.live/cdn/shop/files/81akYZZPkfL._SL1500.jpg?v=1773051385&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('heritage',this,'https://toyhouse.live/cdn/shop/files/81e65NmPaqL._SL1500.jpg?v=1773051385&width=900')"><img src="https://toyhouse.live/cdn/shop/files/81e65NmPaqL._SL1500.jpg?v=1773051385&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('heritage',this,'https://toyhouse.live/cdn/shop/files/PT015-Rajasthani-Art-Photoroom-768x576.jpg?v=1773051385&width=900')"><img src="https://toyhouse.live/cdn/shop/files/PT015-Rajasthani-Art-Photoroom-768x576.jpg?v=1773051385&width=200" alt=""></div>
+            <div class="thumb" onclick="setMainImg('heritage',this,'https://toyhouse.live/cdn/shop/files/41P6GfSKU_L.jpg?v=1773051385&width=900')"><img src="https://toyhouse.live/cdn/shop/files/41P6GfSKU_L.jpg?v=1773051385&width=200" alt=""></div>
+          </div>
+          <div class="detail-review">
+            <div class="stars">★★★★★</div>
+            <p>Gifted this to my daughter and she painted Warli art for 3 hours straight! She's so proud of what she made.</p>
+            <div class="reviewer">Ananya Gupta — Educator, Bangalore</div>
+          </div>
+        </div>
+        <div class="detail-info">
+          <div class="detail-brand">ToyHouse</div>
+          <div class="detail-name">Indian Heritage Art Collection</div>
+          <div class="detail-price-row">
+            <span class="detail-price-now">₹1,499</span>
+            <span class="detail-price-old">₹2,500</span>
+            <span class="detail-price-save">Save ₹1,001</span>
+          </div>
+          <div class="detail-desc">🎨 Learn 4 Traditional Indian Art Forms — connect your child to India's rich artistic heritage while developing creativity, patience, and fine motor skills.</div>
+
+          <div class="detail-section-title">What's Included</div>
+          <ul class="detail-includes">
+            <li><span class="arrow">→</span> Warli Art Kit — ancient tribal art from Maharashtra</li>
+            <li><span class="arrow">→</span> Madhubani Art Kit — Bihar folk art with vibrant patterns</li>
+            <li><span class="arrow">→</span> Rajasthani Miniature Painting Kit</li>
+            <li><span class="arrow">→</span> Shell Art Kit</li>
+            <li><span class="arrow">→</span> FREE History of Indian Art E-Guide (worth ₹350)</li>
+            <li><span class="arrow">→</span> FREE Achievement Certificate</li>
+          </ul>
+
+          <div class="detail-section-title">Skills Developed</div>
+          <ul class="detail-experiments">
+            <li>🎨 Cultural awareness</li>
+            <li>🎨 Fine motor skills</li>
+            <li>🎨 Patience &amp; focus</li>
+            <li>🎨 Creativity</li>
+            <li>🎨 Indian heritage pride</li>
+            <li>🎨 Artistic expression</li>
+          </ul>
+
+          <div class="detail-meta">
+            <div class="meta-chip"><div class="label">Perfect For</div><div class="value">Ages 7–12 years</div></div>
+            <div class="meta-chip"><div class="label">Art Forms</div><div class="value">4 kits included</div></div>
+            <div class="meta-chip"><div class="label">Learning Hours</div><div class="value">15+ hours</div></div>
+            <div class="meta-chip"><div class="label">Screen Time</div><div class="value">Zero 🙅</div></div>
+          </div>
+
+          <div class="detail-badges">
+            <span class="badge-pill">✅ All materials included</span>
+            <span class="badge-pill">✅ Quality Checked</span>
+            <span class="badge-pill">🎁 Gift-wrapped FREE</span>
+            <span class="badge-pill">🚚 Free Shipping</span>
+            <span class="badge-pill">💳 COD Available</span>
+          </div>
+
+          <div class="detail-cta">
+            <a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20want%20to%20place%20an%20order%20for%20Indian%20Heritage%20Art%20Collection%20%E2%82%B91%2C499%20%F0%9F%8E%A8" target="_blank" class="btn-wa-big">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612,.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Place Order on WhatsApp
+            </a>
+            <button class="btn-back-big" onclick="showPage('home')">← Back to All Kits</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING WA (always visible) -->
+<a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20need%20help%20%F0%9F%8E%81" target="_blank" class="float-wa" title="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+// ── PAGE NAVIGATION ──
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('navBack').classList.toggle('visible', name !== 'home');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function showProduct(name) { showPage(name); }
+
+function scrollToProducts() {
+  document.getElementById('products-section').scrollIntoView({behavior:'smooth'});
+}
+
+// ── CARD SLIDERS ──
+const sliders = {};
+function initSlider(id) {
+  const el = document.getElementById(id);
+  const imgs = Array.from(el.querySelectorAll('img'));
+  const dotsContainer = document.getElementById('dots-' + id);
+  sliders[id] = { imgs, current: 0 };
+  imgs.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = (e) => { e.stopPropagation(); goTo(id, i); };
+    dotsContainer.appendChild(d);
+  });
+}
+function goTo(id, index) {
+  const s = sliders[id];
+  s.imgs[s.current].classList.remove('active');
+  document.querySelectorAll('#dots-' + id + ' .dot')[s.current].classList.remove('active');
+  s.current = (index + s.imgs.length) % s.imgs.length;
+  s.imgs[s.current].classList.add('active');
+  document.querySelectorAll('#dots-' + id + ' .dot')[s.current].classList.add('active');
+}
+function slide(id, dir) { goTo(id, sliders[id].current + dir); }
+['slider-1','slider-2','slider-3'].forEach(initSlider);
+setInterval(() => ['slider-1','slider-2','slider-3'].forEach(id => slide(id, 1)), 3500);
+
+// ── DETAIL PAGE GALLERY ──
+function setMainImg(product, thumbEl, src) {
+  document.getElementById('main-img-' + product).src = src;
+  thumbEl.closest('.thumb-row').querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+  thumbEl.classList.add('active');
+}
+</script>
+</body>
+</html>
