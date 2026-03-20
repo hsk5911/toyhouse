@@ -23,7 +23,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:12px 32px;background:rgba(250,243,236,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--cream-mid)}
 .nav-logo{cursor:pointer}
-.nav-logo img{height:44px;width:auto;display:block}
+.nav-logo img{height:50px;width:auto;display:block}
 .nav-right{display:flex;align-items:center;gap:12px}
 .nav-back{display:none;align-items:center;gap:6px;background:var(--cream-dark);border:none;padding:9px 16px;border-radius:50px;font-size:14px;font-weight:600;color:var(--brown);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
 .nav-back:hover{background:var(--cream-mid)}
@@ -37,7 +37,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .hero::before{content:'';position:absolute;top:-120px;right:-120px;width:520px;height:520px;background:radial-gradient(circle,rgba(196,154,108,.18) 0%,transparent 70%);border-radius:50%;animation:blob 9s ease-in-out infinite}
 .hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(107,63,31,.09) 0%,transparent 70%);border-radius:50%;animation:blob 11s ease-in-out infinite reverse}
 @keyframes blob{0%,100%{transform:translateY(0)}50%{transform:translateY(-28px)}}
-.hero-logo{width:150px;height:auto;margin-bottom:28px;filter:drop-shadow(0 8px 24px rgba(107,63,31,.15));animation:fadeDown .8s ease both}
+.hero-logo{width:300px;height:auto;margin-bottom:28px;filter:drop-shadow(0 8px 24px rgba(107,63,31,.15));animation:fadeDown .8s ease both}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
 .hero-badge{display:inline-block;background:var(--brown);color:var(--cream);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 18px;border-radius:50px;margin-bottom:18px;animation:fadeUp .8s .15s both ease}
 .hero h1{font-family:'Playfair Display',serif;font-size:clamp(40px,7vw,78px);font-weight:900;line-height:1.06;color:var(--brown);margin-bottom:18px;animation:fadeUp .8s .25s both ease}
