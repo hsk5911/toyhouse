@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ToyHouse — A Home For Play</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,400;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
 :root {
   --brown:#6B3F1F; --brown-mid:#8B5E3C; --brown-light:#C49A6C;
@@ -22,9 +22,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:12px 32px;background:rgba(250,243,236,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--cream-mid)}
-.nav-logo{cursor:pointer;text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}
-.nav-logo-text{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;color:var(--brown);letter-spacing:-0.5px}
-.nav-logo-sub{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--brown-light)}
+.nav-logo{cursor:pointer;text-decoration:none;display:flex;flex-direction:column;align-items:center;line-height:1.2;gap:3px}
+.nav-logo-text{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#7B4A22;letter-spacing:0.5px;font-style:normal}
+.nav-logo-sub{font-size:9px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:#C49A6C;display:flex;align-items:center;gap:5px}
+.nav-logo-sub::before,.nav-logo-sub::after{content:'—';color:#C49A6C;font-size:9px}
 .nav-right{display:flex;align-items:center;gap:12px}
 .nav-back{display:none;align-items:center;gap:6px;background:var(--cream-dark);border:none;padding:9px 16px;border-radius:50px;font-size:14px;font-weight:600;color:var(--brown);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
 .nav-back:hover{background:var(--cream-mid)}
@@ -217,7 +218,7 @@ footer a:hover{text-decoration:underline}
 <nav>
   <div class="nav-logo" onclick="showPage('home')">
     <span class="nav-logo-text">ToyHouse</span>
-    <span class="nav-logo-sub">— A Home For Play —</span>
+    <span class="nav-logo-sub">A Home For Play</span>
   </div>
   <div class="nav-right">
     <button class="nav-back" id="navBack" onclick="showPage('home')">← Back to Home</button>
