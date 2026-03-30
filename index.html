@@ -44,7 +44,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .ws-hero p{font-size:16px;color:rgba(250,243,236,.75);max-width:560px;margin:0 auto 24px;line-height:1.7}
 .ws-hero-badges{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:28px}
 .ws-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--cream);padding:7px 16px;border-radius:50px;font-size:13px;font-weight:600}
-.ws-cta-bar{background:var(--cream-dark);padding:20px 24px;text-align:center;border-bottom:2px solid var(--cream-mid);position:sticky;top:68px;z-index:100}
+.ws-cta-bar{background:var(--cream-dark);padding:20px 24px;text-align:center;border-bottom:2px solid var(--cream-mid)}
 .ws-cta-bar p{font-size:14px;color:var(--brown-mid);margin-bottom:10px}
 .btn-wa-ws{display:inline-flex;align-items:center;gap:8px;background:var(--wa);color:#fff;padding:13px 28px;border-radius:50px;font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 4px 16px rgba(37,211,102,.3);transition:all .25s}
 .btn-wa-ws:hover{background:#1ebe5d;transform:translateY(-2px)}
@@ -59,23 +59,40 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .ws-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:0 0 14px 14px;overflow:hidden;box-shadow:0 4px 20px rgba(107,63,31,.08)}
 .ws-table th{background:var(--cream-dark);padding:11px 16px;text-align:left;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--brown-mid)}
 .ws-table th:last-child{text-align:right}
-.ws-table td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid var(--cream-mid);color:var(--text)}
+.ws-table td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid var(--cream-mid);color:var(--text);vertical-align:middle}
 .ws-table tr:last-child td{border-bottom:none}
 .ws-table tr:hover td{background:var(--cream)}
-.ws-table td:first-child{color:var(--brown-light);font-weight:600;width:44px}
-.ws-table td:last-child{text-align:right;font-weight:700;color:var(--brown);white-space:nowrap}
+.ws-table td:first-child{color:var(--brown-light);font-weight:600;width:40px}
+.ws-table td.action-col{text-align:right;width:90px}
 .ws-table .ws-order-btn{display:inline-flex;align-items:center;gap:5px;background:var(--wa);color:#fff;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap}
 .ws-table .ws-order-btn:hover{background:#1ebe5d;transform:scale(1.04)}
 .ws-table .ws-order-btn svg{width:13px;height:13px;fill:#fff}
-.ws-table td.action-col{text-align:right;width:90px}
-.ws-qty-wrap{display:flex;align-items:center;gap:6px;justify-content:flex-start}
+.ws-qty-wrap{display:flex;align-items:center;gap:6px}
 .ws-qty-input{width:56px;padding:5px 8px;border:1.5px solid var(--cream-mid);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--brown);background:var(--cream);outline:none;text-align:center;transition:border-color .2s}
 .ws-qty-input:focus{border-color:var(--brown)}
 .ws-qty-total{font-size:13px;font-weight:700;color:var(--brown);white-space:nowrap;min-width:52px}
-@media(max-width:580px){
-  .ws-qty-input{width:44px;font-size:12px;padding:4px 5px}
-  .ws-qty-total{font-size:12px}
-  .ws-table th:nth-child(1),.ws-table td:nth-child(1){display:none}
+
+/* MOBILE: switch table to card layout */
+@media(max-width:600px){
+  .ws-table thead{display:none}
+  .ws-table,.ws-table tbody,.ws-table tr,.ws-table td{display:block;width:100%}
+  .ws-table tr{background:var(--white);border-bottom:2px solid var(--cream-mid);padding:14px 16px;position:relative}
+  .ws-table tr:hover{background:var(--cream)}
+  .ws-table td{padding:0;border:none;font-size:14px}
+  .ws-table td:first-child{display:none}
+  /* product name — big and bold */
+  .ws-table td:nth-child(2){font-weight:600;color:var(--brown);font-size:14px;margin-bottom:10px;line-height:1.4;padding-right:0}
+  /* unit price row */
+  .ws-table td:nth-child(3){font-size:13px;color:var(--brown-mid);margin-bottom:8px}
+  .ws-table td:nth-child(3)::before{content:'Unit Price: ';font-weight:600;color:var(--brown-light)}
+  /* qty + total in one line */
+  .ws-table td:nth-child(4){margin-bottom:10px}
+  .ws-qty-wrap{flex-direction:row;align-items:center;gap:10px}
+  .ws-qty-input{width:64px;font-size:14px;padding:7px 10px}
+  .ws-qty-total{font-size:15px;font-weight:800;color:var(--brown)}
+  /* order button full width */
+  .ws-table td.action-col{width:100%;text-align:left}
+  .ws-table .ws-order-btn{width:100%;justify-content:center;padding:11px;border-radius:10px;font-size:14px}
 }
 
 /* HERO */
@@ -258,13 +275,10 @@ footer a:hover{text-decoration:underline}
   .detail-meta{grid-template-columns:1fr 1fr}
   .detail-experiments{grid-template-columns:1fr}
   .card-actions{flex-direction:column}
-  .ws-table th:nth-child(1),.ws-table td:nth-child(1){display:none}
-  .ws-table{font-size:12px}
-  .ws-table td{padding:8px 10px}
 }
 
 /* WHOLESALE SEARCH & FILTER */
-.ws-search-bar{background:var(--white);padding:20px 24px;border-bottom:1px solid var(--cream-mid);position:sticky;top:119px;z-index:99;box-shadow:0 2px 8px rgba(107,63,31,.06)}
+.ws-search-bar{background:var(--white);padding:16px 24px;border-bottom:1px solid var(--cream-mid);position:sticky;top:68px;z-index:99;box-shadow:0 2px 8px rgba(107,63,31,.06)}
 .ws-search-inner{max-width:1000px;margin:0 auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .ws-search-input-wrap{flex:1;min-width:200px;position:relative}
 .ws-search-input-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;fill:var(--brown-light)}
@@ -277,10 +291,10 @@ footer a:hover{text-decoration:underline}
 .ws-count{font-size:13px;color:var(--brown-light);font-weight:500;white-space:nowrap;align-self:center}
 .ws-no-results{text-align:center;padding:40px;color:var(--brown-mid);font-size:15px;display:none}
 @media(max-width:580px){
-  .ws-search-bar{top:108px;padding:12px 16px}
+  .ws-search-bar{top:58px;padding:10px 16px}
   .ws-search-inner{gap:8px}
   .ws-filter-btn{padding:7px 12px;font-size:12px}
-  .ws-cta-bar{top:58px}
+
 }
 </style>
 </head>
@@ -721,10 +735,10 @@ footer a:hover{text-decoration:underline}
     </div>
   </div>
   <div class="ws-cta-bar">
-    <p>💬 Prices shown below are for wholesale only. Click <strong>Order</strong> on any product to WhatsApp us directly!</p>
+    <p>💬 Prices shown are retail — wholesale prices are lower based on quantity. Contact us on WhatsApp for bulk pricing!</p>
     <a href="https://wa.me/918384092939?text=Hi%20ToyHouse!%20I%20am%20interested%20in%20wholesale%20bulk%20ordering%20%F0%9F%93%A6" target="_blank" class="btn-wa-ws">
       <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Contact for Queries
+      Contact for Wholesale Pricing
     </a>
   </div>
 
@@ -748,7 +762,7 @@ footer a:hover{text-decoration:underline}
   </div>
   <div class="ws-body">
     <div class="ws-note">
-      ⚠️ <strong>Note:</strong> It is possible that some items may not be in stock when you are viewing this catalogue. We recommend checking with your ToyHouse representative before placing the order. Happy Shopping!
+      ⚠️ <strong>Note:</strong> Prices listed are <strong>retail prices</strong> for reference only. Wholesale prices are lower and depend on order quantity. Some items may not be in stock — please confirm with us before ordering. Click <strong>Order</strong> on any product to WhatsApp us directly!
     </div>
     
     <div class="ws-category">
